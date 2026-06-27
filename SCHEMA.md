@@ -34,7 +34,7 @@ You never hand-write the wiki. **Your job:** curate which sources to add and ask
    - **Articles / docs / notes** → `raw/sources/`. **Committed** — these *are* your curated source of
      truth (markdown clips, PDFs, transcripts) and must persist.
 2. **The wiki — generated, the agent owns it.** Markdown only.
-   - **Code** → `wiki/<slug>/` (written by the skill): `overview.md`, `concepts/`, `catalog/`,
+   - **Code** → `wiki/code/<slug>/` (written by the skill): `overview.md`, `concepts/`, `catalog/`,
      `doc-concepts/`.
    - **Prose** → `wiki/sources/<source>.md` (one summary per ingested article) and
      `wiki/topics/<topic>.md` (synthesized entity/concept/topic pages that span sources).
@@ -64,7 +64,7 @@ You never hand-write the wiki. **Your job:** curate which sources to add and ask
 Read **`index.md` first** to see what exists, then go by what you're asking:
 
 **Code questions** route by page type — don't fall back to grepping raw source:
-- *"Where do I start / what are the systems?"* → `wiki/<slug>/overview.md` (concepts + diagrams + a map of
+- *"Where do I start / what are the systems?"* → `wiki/code/<slug>/overview.md` (concepts + diagrams + a map of
   which concept answers which question).
 - *"How does `<mechanism>` work, and why?"* → `concepts/<concept>.md` (prose + Mermaid diagram + woven
   citations).

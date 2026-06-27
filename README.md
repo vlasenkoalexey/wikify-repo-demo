@@ -22,20 +22,18 @@ This repo is both:
 
 ```
 SCHEMA.md              single source of truth — the three layers, ingest/query/lint, retrieval rules.
-CLAUDE.md              @SCHEMA.md pointer for Claude Code.
-AGENTS.md              @SCHEMA.md pointer for Codex.
-GEMINI.md              @SCHEMA.md pointer for Antigravity / Gemini.
-.agents/skills/        agent skills — canonical location, read natively by Codex + Antigravity.
-  wikify-ingest-repo/    the ingest skill, installed from wikify-repo (SKILL.md + prompts/).
-.claude/skills/        Claude Code's skill dir — symlink to ../../.agents/skills (gitignored; install-skill.sh regenerates).
 raw/                   immutable inputs — never modified.
   code/<slug>/           ingested repos as git SUBMODULES, pinned by gitlink (this demo defaults to acquire: submodule).
   sources/               ingested articles / docs / notes — committed source of truth.
-.cache/                SCIP indexes, packets, reconcile state (gitignored, regenerable).
 wiki/                  LLM-owned markdown — the product.
   index.md               read-first catalog: code repos, topics, sources, notes.
   log.md                 append-only event log (## [date] <op> | <name>).
-  <slug>/                one CODE wiki per repo: overview.md, concepts/, catalog/, doc-concepts/.
+  code/                  code wikis (one dir per repo) + an auto code catalog (index.md).
+    <slug>/                one CODE wiki per repo:
+      overview.md            high-level map — main concepts + system diagrams.
+      concepts/              grounded mechanism pages (prose + Mermaid + citations).
+      catalog/               per-module symbol catalogs — signatures, docstrings, source links, uses-by.
+      doc-concepts/          pages derived from the repo's own docs.
   sources/               one summary page per ingested article.
   topics/                synthesized prose pages — entities, concepts, comparisons.
   notes/                 cross-cutting answers filed back from queries.

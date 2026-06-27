@@ -5,7 +5,7 @@
 the relevant entry here, then drill into its page. See [`log.md`](log.md) for the chronological history.
 
 ## Code repos
-One `wiki/<slug>/` per ingested repo. Open its `overview.md` as a map, then `grep` to the concept/catalog
+One `wiki/code/<slug>/` per ingested repo. Open its `overview.md` as a map, then `grep` to the concept/catalog
 page and cite the catalog anchor; drop to the pinned source for line-level certainty.
 
 | Slug | Source repo | Pinned commit | What it answers |
