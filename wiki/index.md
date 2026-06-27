@@ -17,13 +17,17 @@ _To add one:_ **`ingest <repo-url-or-path>`** — the skill adds a row here and 
 ## Topics
 Synthesized prose pages (`wiki/topics/<topic>.md`) — entities, concepts, comparisons that span sources.
 
-_None yet._
+- [The LLM Wiki Pattern](topics/llm-wiki-pattern.md) — the three-layer / three-operation pattern this
+  repo instantiates; includes the *code-as-a-source-type* extension.
+- [RAG vs. compiled knowledge](topics/rag-vs-compiled-knowledge.md) — why a maintained wiki differs from
+  query-time retrieval (work at ingest, not per query) — and the grounding twist for code.
 
 ## Sources
 One summary page (`wiki/sources/<source>.md`) per ingested article/doc/note; the raw source lives in
 `raw/sources/`.
 
-_None yet._
+- [Karpathy — the LLM Wiki Pattern](sources/karpathy-llm-wiki-pattern.md) — the gist this repo is built
+  on (self-referential ingest). Raw: `raw/sources/karpathy-llm-wiki-pattern.md`.
 
 _To add one:_ drop the file in `raw/sources/`, then ask the agent to ingest it — it writes a summary,
 updates the topic pages it touches, cross-links, and logs it.

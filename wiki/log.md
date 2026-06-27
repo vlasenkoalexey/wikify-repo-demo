@@ -19,3 +19,13 @@ Ingested github.com/vlasenkoalexey/mini_pytorch_xla as a git submodule under
 at the StableHLO+PJRT waist). Wrote `overview.md`. No repo docs to ingest (empty worklist).
 `wikify finalize` passed first try — citation lint OK, 14 module catalog pages, 100% symbol coverage
 (183 deep / 310 catalog-only), `index.md` assembled. Updated `wiki/index.md` Code-repos row.
+
+## [2026-06-27] ingest | karpathy-llm-wiki-pattern
+First prose ingest (classic Karpathy path). Source: Karpathy's LLM-wiki gist —
+the article this repo instantiates, so a self-referential ingest. Fetched into
+`raw/sources/karpathy-llm-wiki-pattern.md` (a fetched rendering, not byte-verbatim; provenance noted
+in-file). Wrote summary `wiki/sources/karpathy-llm-wiki-pattern.md`; created two synthesized topic
+pages — `topics/llm-wiki-pattern.md` (three layers / three ops + the code-as-a-source-type extension)
+and `topics/rag-vs-compiled-knowledge.md` (ingest-time vs. query-time synthesis, plus the code grounding
+twist). Cross-linked both into the `mini_pytorch_xla` code wiki and `SCHEMA.md`. Updated `wiki/index.md`
+Topics + Sources sections.
