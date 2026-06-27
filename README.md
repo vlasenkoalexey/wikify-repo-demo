@@ -99,11 +99,5 @@ Then follow **Make your own** below to ingest *your* repos and articles into it.
 The wiki sits *between* raw repos and your questions: the cross-references are already there, the
 dynamic-dispatch seams a call-graph walk misses are covered by deterministic catalogs, and every
 mechanism page is grounded in real SCIP symbols. The tedious part — the bookkeeping — is done once
-and kept current, so answers are fast, grounded, and consistent.
-
----
-
-*Inspired by [Andrej Karpathy's LLM markdown wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-— a persistent, compounding markdown wiki the model maintains instead of re-deriving answers via RAG each
-query. This repo instantiates it for **code + prose**; see [`wiki/topics/llm-wiki-pattern.md`](wiki/topics/llm-wiki-pattern.md)
-for the pattern itself.*
+and kept current, so answers are fast, grounded, and consistent. Conceptually generated wiki offers an annotated
+map to your code base that LLM agetnt can navigate efficiently.
