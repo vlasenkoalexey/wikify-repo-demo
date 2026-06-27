@@ -1,9 +1,15 @@
 # wikify-repo-demo
 
-A **live demo** of the [Karpathy LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-applied to **code**. The immutable "sources" are whole code repositories; the wiki is a grounded,
-lint-clean **markdown** knowledge base an agent can answer internals questions from. It is built and
-kept current by the [`wikify-ingest-repo`](https://github.com/vlasenkoalexey/wikify-repo) skill.
+**The companion demo for [wikify-repo](https://github.com/vlasenkoalexey/wikify-repo).** wikify-repo
+is the tool — a CLI + agent skill that ingests a code repo into a grounded markdown wiki. This repo
+is what that tool *produces*: a live, browseable example so you can see the output before installing
+anything.
+
+It's a [Karpathy LLM-wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) applied
+to **code** — the immutable "sources" are whole code repositories; the wiki is a grounded, lint-clean
+**markdown** knowledge base an agent can answer internals questions from. It is built and kept current
+by the **`wikify-ingest-repo`** skill, which ships with
+[wikify-repo](https://github.com/vlasenkoalexey/wikify-repo) (not defined here — installed from there).
 
 This repo is both:
 - a **showcase** — clone it and browse a real, populated wiki under [`wiki/`](wiki/); and
@@ -19,7 +25,7 @@ This repo is both:
 | [`wiki/log.md`](wiki/log.md) | Append-only ingest history (`## [date] ingest | <slug>`). |
 | [`SCHEMA.md`](SCHEMA.md) | The agent brain — the three layers, the ingest/query/lint loop, retrieval rules. |
 | `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` | Thin pointers to `SCHEMA.md` (Claude Code / Codex / Antigravity). |
-| `.agents/skills/wikify-ingest-repo/` | The ingest skill (read natively by Codex + Antigravity; symlinked into `.claude/skills/` for Claude Code). |
+| `.agents/skills/wikify-ingest-repo/` | The ingest skill **installed from [wikify-repo](https://github.com/vlasenkoalexey/wikify-repo)** (read natively by Codex + Antigravity; symlinked into `.claude/skills/` for Claude Code). |
 
 ## Browse it (no install)
 

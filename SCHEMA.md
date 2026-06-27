@@ -1,12 +1,15 @@
 # wikify-repo-demo — project memory
 
 ## What this is
-A **live demo + template** of the [Karpathy LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-applied to **code**: instead of articles, the immutable sources are whole *code repos*, and the
-wiki is a grounded, lint-clean **markdown** knowledge base an agent answers internals questions
-from. The wiki is built and maintained by the **`wikify-ingest-repo`** skill (see
-[wikify-repo](https://github.com/vlasenkoalexey/wikify-repo)); this repo is what that skill
-*produces and lives in*.
+The **companion demo + template for [wikify-repo](https://github.com/vlasenkoalexey/wikify-repo)** —
+the tool (CLI + agent skill) that ingests a code repo into a grounded markdown wiki. This repo is what
+that tool *produces and lives in*.
+
+It is a [Karpathy LLM-wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) applied
+to **code**: instead of articles, the immutable sources are whole *code repos*, and the wiki is a
+grounded, lint-clean **markdown** knowledge base an agent answers internals questions from. The wiki
+is built and maintained by the **`wikify-ingest-repo`** skill, which **ships with wikify-repo** (it is
+installed into `.agents/skills/` here, not defined here).
 
 Clone it to browse a real wiki, or use it as a GitHub **template** to start your own.
 
