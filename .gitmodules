@@ -1,0 +1,3 @@
+[submodule "raw/code/mini_pytorch_xla"]
+	path = raw/code/mini_pytorch_xla
+	url = https://github.com/vlasenkoalexey/mini_pytorch_xla

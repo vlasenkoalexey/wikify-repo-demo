@@ -10,7 +10,7 @@ page and cite the catalog anchor; drop to the pinned source for line-level certa
 
 | Slug | Source repo | Pinned commit | What it answers |
 |---|---|---|---|
-| _(planned)_ `mini-pytorch-xla` | github.com/vlasenkoalexey/mini-pytorch-xla | _pending_ | `__torch_dispatch__` TPU backend: PJRT/libtpu via ctypes, StableHLO lowering, autograd frontend |
+| [`mini_pytorch_xla`](code/mini_pytorch_xla/overview.md) | github.com/vlasenkoalexey/mini_pytorch_xla | `0b58029` | `__torch_dispatch__` TPU backend (PJRT/libtpu via ctypes, StableHLO text lowering) **+** a from-scratch `no_pytorch` autograd Tensor / nn / training loop — both tracks meet at the StableHLO+PJRT waist |
 
 _To add one:_ **`ingest <repo-url-or-path>`** — the skill adds a row here and an entry to [`log.md`](log.md).
 
