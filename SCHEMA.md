@@ -47,13 +47,31 @@ plus `wiki/index.md` and an entry in `wiki/log.md`. **Idempotent reconcile** —
 (no-op, or just the changed delta); `ingest --ref <commit>` updates a pinned repo and rebuilds only the
 symbols that moved.
 
-**Query.** Ask an internals question *against the wiki*, cheaply. Read **`wiki/index.md` first** to pick
-the repo, open its **`overview.md`** as a map, **grep** to the concept/catalog page, read only the
-relevant section, and **cite the catalog anchor** (`catalog/<module>.md#<QualifiedName>`); prefer the
-author's extracted docstrings over re-deriving behavior. Don't bulk-read whole pages. **File good answers
-back:** a cross-repo comparison, a derived mechanism note, a connection you discovered — these are
-valuable and shouldn't vanish into chat. Write them as a new page (e.g. `wiki/<slug>/concepts/…` or a
-`wiki/notes/…`), link them from `index.md`, and log it — so explorations compound like ingests do.
+**Query.** Ask a code-internals question and let the wiki's structure *route* you — don't fall back to
+grepping raw source. Different questions want different page types:
+- *"Where do I start / what are the main systems?"* → **`wiki/<slug>/overview.md`** — top-level concepts,
+  system diagrams, and a map of *which concept page answers which question*.
+- *"How does `<mechanism>` work — the control/data flow, and why is it built this way?"* →
+  **`concepts/<concept>.md`** — a grounded mechanism page: prose + a Mermaid diagram + woven citations.
+- *"What is `<symbol>` — its signature, where it's defined, who calls it?"* → **`catalog/<module>.md`** —
+  the symbol's single home: signature, extracted docstring, a relative link to its exact source line, and
+  an importance-ranked **uses-by** list (the inbound edges a name-based grep would miss or mis-attribute).
+- *"What do the project's own docs say about `<X>`?"* → **`doc-concepts/<concept>.md`**.
+
+Workflow: read **`index.md` first** to pick the repo, use `overview.md` as the map, then
+`grep -ri "<symbol-or-term>" wiki/<slug>/` to land on the page and read only the relevant section. **Cite
+the catalog anchor** (`catalog/<module>.md#<QualifiedName>`) and prefer the author's extracted docstring
+over re-deriving behavior. Don't bulk-read whole pages.
+
+**When you need line-level certainty, drop to the pinned source.** The wiki is *grounded in* the code, not
+a replacement for it: every catalog entry carries a relative link to `raw/code/<slug>/…` at the pinned
+commit. Follow it to confirm an exact signature, a branch, an edge case — the wiki's job is to get you to
+the right ten lines without reading the whole repo.
+
+**File good answers back.** A cross-cutting trace you reconstructed (e.g. the full dispatch path from a
+public API call down to the backend kernel), a cross-repo comparison, an invariant you verified — write it
+as a new `concepts/…` or `notes/…` page, link it from `index.md`, and log it, so explorations compound in
+the wiki just like ingests do.
 
 **Lint.** Periodically health-check the wiki. The deterministic gates: `wikify finalize <slug>` (hard
 citation gate — every cited symbol must resolve, every mechanism claim must be cited), `wikify verify
