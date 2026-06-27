@@ -1,6 +1,7 @@
-# Karpathy layer 1 — raw sources are immutable AND pinned by commit SHA, not vendored.
-# We clone upstream repos here on ingest; never commit them.
-raw/
+# Karpathy layer 1 — raw sources are immutable. Two source types, two conventions:
+#   - code repos: pinned by commit SHA and cloned on ingest, NOT vendored -> ignore raw/code/
+#   - articles/docs/notes: these ARE the curated source of truth -> raw/sources/ IS committed
+raw/code/
 
 # Build artifacts: SCIP indexes, packets, reconcile state. Regenerable, never committed.
 .cache/

@@ -1,105 +1,117 @@
 # wikify-repo-demo — project memory
 
 ## What this is
-The **companion demo + template for [wikify-repo](https://github.com/vlasenkoalexey/wikify-repo)** —
-the tool (CLI + agent skill) that ingests a code repo into a grounded markdown wiki. This repo is what
-that tool *produces and lives in*: a working instantiation of the
-[Karpathy LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) for the
-**code** domain. The sections below follow that gist and adapt it; the `wikify-ingest-repo` skill (which
-**ships with wikify-repo**, installed into `.agents/skills/` here) is the maintainer that does the work.
+A working instantiation of the
+[Karpathy LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) that
+handles **two kinds of source** in one knowledge base:
+- **Code repos** — ingested by the **`wikify-ingest-repo`** skill (which ships with
+  [wikify-repo](https://github.com/vlasenkoalexey/wikify-repo), installed into `.agents/skills/` here)
+  into a grounded, lint-clean wiki. This is the headline — the repo is the **companion demo for
+  wikify-repo**, showing what that tool produces.
+- **Articles / docs / notes** — ingested the classic Karpathy way: read the source, write a summary
+  page, update the topic and entity pages it touches, cross-link, log.
 
-## The core idea — instantiated for code
-The usual way an agent answers a question about a codebase is RAG-shaped: grep the source, read some
-chunks, reconstruct the answer from scratch — *every time*. Nothing accumulates, and the hard parts get
-re-derived on every question: how a `nn.Module` is actually dispatched, which of five files a mechanism
-really spans, whether a claim is grounded in real code.
+Both paths feed **one wiki**, one `index.md`, one `log.md`. Code is a powerful *automated* source type
+alongside prose; everything below tells the agent how to maintain both.
 
-This repo is different. Between the raw repos and your internals questions sits a **persistent,
-compounding wiki**: when you ingest a repo, the tooling reads it, resolves its symbols, writes grounded
-concept + catalog pages, links them, and lints every citation. The cross-references are already there;
-the dynamic-dispatch seams a call-graph walk misses are already covered by deterministic catalogs; every
-mechanism claim already cites a real symbol. **Compiled once, then kept current** — not re-derived per
-query.
+## The core idea
+The usual way an agent uses documents is RAG-shaped: retrieve chunks at query time and reconstruct the
+answer from scratch, *every time*. Nothing accumulates. This repo is different: between the raw sources
+and your questions sits a **persistent, compounding wiki** the agent builds and keeps current. The
+cross-references are already there, the synthesis already reflects everything ingested, and — for code —
+the grounding and the dynamic-dispatch seams a call-graph walk misses are already resolved. Compiled
+once, kept current, not re-derived per query.
 
-You never hand-write the wiki. The skill + deterministic CLI write and maintain all of it. **Your job:**
-choose which repos to ingest, ask good internals questions, and file the good answers back. **Their job:**
-the indexing, summarizing, cross-referencing, grounding, and bookkeeping.
+You never hand-write the wiki. **Your job:** curate which sources to add and ask good questions.
+**The agent/tooling's job:** the summarizing, cross-referencing, grounding, and bookkeeping.
 
-## Architecture — three layers
-1. **Raw sources — immutable.** Upstream repos, pinned by commit SHA, cloned under `raw/code/<slug>`.
-   Read, never edited. `raw/` is gitignored — we pin by SHA, we don't vendor the code. This is the
-   source of truth.
-2. **The wiki — generated, owned by the tooling.** `wiki/<slug>/` — `overview.md`, `concepts/`,
-   `catalog/`, `doc-concepts/`. The skill + CLI own this layer: they create pages on ingest, rebuild
-   only the delta on update, maintain cross-links, and keep citations resolving. You read it.
-3. **The schema — this file.** `SCHEMA.md` tells the agent how the wiki is structured and what workflow
-   to follow for ingest / query / lint. `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` are thin pointers so
-   Claude Code, Codex, and Antigravity all read this one brain. Co-evolve it as conventions settle.
+## Architecture — three layers, two source types
+1. **Raw sources — immutable.** Read, never edited.
+   - **Code repos** → `raw/code/<slug>/`, pinned by commit SHA. **Gitignored** — we pin by SHA, we don't
+     vendor the code.
+   - **Articles / docs / notes** → `raw/sources/`. **Committed** — these *are* your curated source of
+     truth (markdown clips, PDFs, transcripts) and must persist.
+2. **The wiki — generated, the agent owns it.** Markdown only.
+   - **Code** → `wiki/<slug>/` (written by the skill): `overview.md`, `concepts/`, `catalog/`,
+     `doc-concepts/`.
+   - **Prose** → `wiki/sources/<source>.md` (one summary per ingested article) and
+     `wiki/topics/<topic>.md` (synthesized entity/concept/topic pages that span sources).
+   - **Cross-cutting answers** → `wiki/notes/<note>.md` (filed back from queries; may mix code + prose).
+   - **Shared** → `wiki/index.md`, `wiki/log.md`.
+3. **The schema — this file.** `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` are thin pointers so Claude Code,
+   Codex, and Antigravity read this one brain. Co-evolve it as conventions settle.
 
 ## Operations
 
-**Ingest.** Add a repo. Just tell your agent: **`ingest <repo-url-or-local-path>`** — it runs the
-procedure in **`.agents/skills/wikify-ingest-repo/SKILL.md`**:
-`prepare` (pin + SCIP-index + symbol graph + packets) → synthesize one grounded concept page per packet
-→ synthesize `overview.md` → ingest the repo's own docs into `doc-concepts/` → `finalize` (citation lint
-+ coverage catalogs + assemble). One ingest touches many pages: every concept/catalog page for the repo,
-plus `wiki/index.md` and an entry in `wiki/log.md`. **Idempotent reconcile** — re-running converges
-(no-op, or just the changed delta); `ingest --ref <commit>` updates a pinned repo and rebuilds only the
-symbols that moved.
+### Ingest — two paths into one wiki
+- **Code repo.** Just say **`ingest <repo-url-or-local-path>`** → runs
+  **`.agents/skills/wikify-ingest-repo/SKILL.md`**: `prepare` (pin + SCIP-index + symbol graph + packets)
+  → synthesize one grounded concept page per packet → `overview.md` → ingest the repo's own docs into
+  `doc-concepts/` → `finalize` (citation lint + coverage catalogs + assemble). Touches every page for
+  that repo, updates `wiki/index.md`, appends `wiki/log.md`. **Idempotent reconcile** — re-running
+  converges; `ingest --ref <commit>` rebuilds only the symbols that moved.
+- **Article / doc / note.** Drop the source in `raw/sources/`, then: read it, discuss takeaways, write a
+  summary page at `wiki/sources/<source>.md`, **update or create the topic/entity pages it touches**
+  (`wiki/topics/…` — a single source can touch 10–15 pages), add cross-references, note where it
+  contradicts existing claims, update `wiki/index.md`, append `wiki/log.md`. Freeform prose with
+  citations back to the source file.
 
-**Query.** Ask a code-internals question and let the wiki's structure *route* you — don't fall back to
-grepping raw source. Different questions want different page types:
-- *"Where do I start / what are the main systems?"* → **`wiki/<slug>/overview.md`** — top-level concepts,
-  system diagrams, and a map of *which concept page answers which question*.
-- *"How does `<mechanism>` work — the control/data flow, and why is it built this way?"* →
-  **`concepts/<concept>.md`** — a grounded mechanism page: prose + a Mermaid diagram + woven citations.
-- *"What is `<symbol>` — its signature, where it's defined, who calls it?"* → **`catalog/<module>.md`** —
-  the symbol's single home: signature, extracted docstring, a relative link to its exact source line, and
-  an importance-ranked **uses-by** list (the inbound edges a name-based grep would miss or mis-attribute).
-- *"What do the project's own docs say about `<X>`?"* → **`doc-concepts/<concept>.md`**.
+### Query — let the wiki's structure route you
+Read **`index.md` first** to see what exists, then go by what you're asking:
 
-Workflow: read **`index.md` first** to pick the repo, use `overview.md` as the map, then
-`grep -ri "<symbol-or-term>" wiki/<slug>/` to land on the page and read only the relevant section. **Cite
-the catalog anchor** (`catalog/<module>.md#<QualifiedName>`) and prefer the author's extracted docstring
-over re-deriving behavior. Don't bulk-read whole pages.
+**Code questions** route by page type — don't fall back to grepping raw source:
+- *"Where do I start / what are the systems?"* → `wiki/<slug>/overview.md` (concepts + diagrams + a map of
+  which concept answers which question).
+- *"How does `<mechanism>` work, and why?"* → `concepts/<concept>.md` (prose + Mermaid diagram + woven
+  citations).
+- *"What is `<symbol>` — signature, definition, who calls it?"* → `catalog/<module>.md` (the symbol's
+  single home: signature, extracted docstring, a relative link to its exact source line, importance-ranked
+  **uses-by**).
+- *Need line-level certainty?* **Drop to the pinned source** — every catalog entry links to
+  `raw/code/<slug>/…` at the pinned commit. The wiki gets you to the right ten lines; the source confirms
+  the exact branch/signature/edge case.
 
-**When you need line-level certainty, drop to the pinned source.** The wiki is *grounded in* the code, not
-a replacement for it: every catalog entry carries a relative link to `raw/code/<slug>/…` at the pinned
-commit. Follow it to confirm an exact signature, a branch, an edge case — the wiki's job is to get you to
-the right ten lines without reading the whole repo.
+**Prose questions** → read the relevant `wiki/topics/<topic>.md` (and the `wiki/sources/…` summaries it
+cites); synthesize with citations back to the source pages / raw files.
 
-**File good answers back.** A cross-cutting trace you reconstructed (e.g. the full dispatch path from a
-public API call down to the backend kernel), a cross-repo comparison, an invariant you verified — write it
-as a new `concepts/…` or `notes/…` page, link it from `index.md`, and log it, so explorations compound in
-the wiki just like ingests do.
+In both cases: read only the relevant section (don't bulk-read), cite precisely (a catalog anchor
+`catalog/<module>.md#<QualifiedName>` for code, a source/topic page for prose), and **file good answers
+back** — a reconstructed cross-cutting trace, a cross-repo or cross-source comparison, an invariant you
+verified — as a `wiki/notes/…` (or `concepts/…`/`topics/…`) page, linked from `index.md` and logged, so
+explorations compound like ingests.
 
-**Lint.** Periodically health-check the wiki. The deterministic gates: `wikify finalize <slug>` (hard
-citation gate — every cited symbol must resolve, every mechanism claim must be cited), `wikify verify
-<slug>` (adversarial check), and the **coverage** pass (set-difference over the symbol table → a catalog
-page per module, so no subsystem is silently dropped). Then the judgment pass — look for: stale pages a
-newer commit superseded (`ingest --ref`), orphan concept pages with no inbound links, important symbols
-mentioned but lacking a page, missing cross-references between related concepts, and modules that only
-got a thin catalog and deserve a real mechanism page.
+### Lint — health-check both
+- **Code** (deterministic gates): `wikify finalize <slug>` (every citation resolves, every mechanism claim
+  is cited), `wikify verify <slug>` (adversarial), and **coverage** (set-difference over the symbol table
+  → a catalog page per module, so no subsystem is silently dropped). Stale at a new commit → `ingest
+  --ref`.
+- **Prose** (judgment pass): contradictions between pages, stale claims a newer source superseded, orphan
+  pages with no inbound links, concepts mentioned but lacking their own page, gaps worth a web search.
+- **Shared**: orphan detection, missing cross-references, staleness across the whole `wiki/`.
 
 ## Indexing and logging
-- **`wiki/index.md` is content-oriented and read first.** A catalog of every ingested repo — each with a
-  link, a one-line summary, the pinned commit, and the questions it answers. The tooling updates it on
-  every ingest; an agent reads it first to find the right pages, then drills in. At this scale (a handful
-  of repos, hundreds of pages) the index + `grep` replaces embedding-based RAG entirely.
-- **`wiki/log.md` is chronological and append-only.** One entry per operation, prefixed
-  `## [YYYY-MM-DD] <op> | <slug>` (`ingest` / `update` / `lint` / `note`) so it stays parseable with plain
-  unix tools — `grep '^## \[' wiki/log.md | tail -5` gives the last five operations.
+- **`wiki/index.md` is read first.** A content catalog with three sections — **Code repos** (link →
+  `overview.md`, pinned commit, what it answers), **Topics** (synthesized prose pages), **Sources**
+  (ingested articles) — each line a link + one-line summary. Updated on every ingest. At this scale the
+  index + `grep` replaces embedding-based RAG.
+- **`wiki/log.md` is append-only**, prefixed so it stays greppable
+  (`grep '^## \[' wiki/log.md | tail -5`):
+  `## [YYYY-MM-DD] ingest-code | <slug>` · `## [YYYY-MM-DD] ingest | <source>` ·
+  `## [YYYY-MM-DD] lint | <scope>` · `## [YYYY-MM-DD] note | <title>`.
 
-## Grounding — what makes a *code* wiki trustworthy
-Faithful synthesis is non-negotiable here (stronger than a freeform notes wiki): synthesis cites **only**
-symbols in the packet subgraph; uncited claims go in `> [!inferred]` blocks; the citation linter is a
-build gate, not a prompt. **Markdown is the only product** — SCIP indexes and build artifacts live in
-gitignored `.cache/`, never in `raw/`.
+## Grounding — what makes the wiki trustworthy
+- **Code** (strict): synthesis cites **only** symbols in the packet subgraph; uncited claims go in
+  `> [!inferred]` blocks; the citation linter is a build gate, not a prompt. Prefer the author's extracted
+  docstrings over re-deriving behavior.
+- **Prose**: cite the raw source for every claim; flag contradictions instead of silently overwriting; put
+  synthesis that goes beyond the sources in `> [!inferred]`.
+- **Shared**: **markdown is the only product** — SCIP indexes and build artifacts live in gitignored
+  `.cache/`, never in `raw/`.
 
 ## Why this works
-The tedious part of a code knowledge base isn't the reading — it's the bookkeeping: keeping
-cross-references current, re-grounding claims when code moves, representing every module, noticing when a
-new commit invalidates a page. Humans abandon internals docs because that burden outgrows the value. The
-tooling doesn't get bored, doesn't forget a cross-reference, and rebuilds only the delta — so the wiki
-stays maintained because maintenance is near-zero-cost and idempotent. You curate and question; the skill
-does everything else.
+The tedious part of a knowledge base isn't the reading — it's the bookkeeping: keeping cross-references
+current, re-grounding claims when a source (or a commit) moves, representing everything, noticing
+contradictions. Humans abandon wikis because that burden outgrows the value. The tooling doesn't get
+bored, doesn't forget a cross-reference, rebuilds only the delta, and (for code) grounds every claim in a
+real symbol — so the wiki stays maintained because maintenance is near-zero-cost. You curate and question;
+the agent does everything else.

@@ -5,11 +5,13 @@ is the tool — a CLI + agent skill that ingests a code repo into a grounded mar
 is what that tool *produces*: a live, browseable example so you can see the output before installing
 anything.
 
-It's a [Karpathy LLM-wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) applied
-to **code** — the immutable "sources" are whole code repositories; the wiki is a grounded, lint-clean
-**markdown** knowledge base an agent can answer internals questions from. It is built and kept current
-by the **`wikify-ingest-repo`** skill, which ships with
-[wikify-repo](https://github.com/vlasenkoalexey/wikify-repo) (not defined here — installed from there).
+It's a [Karpathy LLM-wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) that
+handles **two source types** in one knowledge base: **code repos** — ingested by the
+**`wikify-ingest-repo`** skill (which ships with
+[wikify-repo](https://github.com/vlasenkoalexey/wikify-repo), not defined here) into a grounded,
+lint-clean **markdown** wiki an agent answers internals questions from — and **articles / docs / notes**,
+ingested the classic Karpathy way (read → summarize → cross-link). Code is the headline; prose rides
+along in the same `index.md` / `log.md`. See [`SCHEMA.md`](SCHEMA.md) for the full workflow.
 
 This repo is both:
 - a **showcase** — clone it and browse a real, populated wiki under [`wiki/`](wiki/); and
