@@ -91,7 +91,9 @@ function ghBlob(rel) {
   return `https://github.com/${user}/${repo}/blob/main/${parts.join('/')}`;
 }
 
-fetch('graph.json').then(r => r.json()).then(data => {
+// `no-store` so a regenerated graph.json shows immediately — GitHub Pages serves
+// assets with max-age=600, which otherwise leaves a stale graph cached for 10 min.
+fetch('graph.json', { cache: 'no-store' }).then(r => r.json()).then(data => {
   const byId = new Map(data.nodes.map(n => [n.id, n]));
   data.nodes.forEach(n => { n.neighbors = []; n.links = []; });
   // links arrive with string endpoints; force-graph rewrites source/target to node refs.
