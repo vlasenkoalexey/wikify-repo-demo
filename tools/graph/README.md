@@ -53,11 +53,19 @@ needs the HTTP server (browsers block `file://` cross-directory navigation).
 
 ## Files
 
+This repo serves the viewer live via **GitHub Pages** (source: `main`/root):
+**<https://vlasenkoalexey.github.io/wikify-repo-demo/tools/graph/>**. The README embeds a static still
+that links here.
+
+## Files
+
 | File | Role |
 |------|------|
 | `build_graph.py` | walks the wiki, emits `graph.json` (`{nodes, links}`); see `page_group()` for the code/prose bucketing |
-| `index.html` | the viewer (loads `force-graph` from unpkg CDN) |
+| `index.html` | the interactive viewer (loads `force-graph` from unpkg CDN) — this is what GitHub Pages serves |
+| `render_static.py` | renders `graph.png` (the README still) from `graph.json` — optional, needs `networkx` + `Pillow` |
 | `graph.json` | generated data — regenerate after wiki edits; safe to delete |
+| `graph.png` | generated still for the README — regenerate after `graph.json` changes |
 
 `graph.json` is a generated artifact. Regenerate it whenever the wiki changes
 (e.g. after an `ingest`, or wire `build_graph.py` into a lint/finalize step if you want it
