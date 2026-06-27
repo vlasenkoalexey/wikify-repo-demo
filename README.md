@@ -53,6 +53,25 @@ plain markdown — no embeddings, no database. An agent answers cheaply by readi
 to the right page, and citing the catalog anchor. (You don't need the submodules just to read the wiki —
 only to follow a catalog link down to the exact source line.)
 
+## Start clean (just the pattern, none of the demo's ingested content)
+
+`main` is the **fully-populated showcase** — it carries the demo's ingested sources (the
+`mini_pytorch_xla` code wiki and the Karpathy article). If you want to **adopt the pattern for your own
+sources** and don't care about what's already been ingested here, start from the **[`clean`](https://github.com/vlasenkoalexey/wikify-repo-demo/tree/clean) branch**:
+it's pinned to the state of this repo *before* the first ingest — pure scaffolding (`SCHEMA.md`, the
+`wikify-ingest-repo` skill, an empty `wiki/index.md` + `wiki/log.md`), no `raw/`, no ingested pages.
+
+```bash
+# fresh start from the empty template:
+git clone -b clean https://github.com/vlasenkoalexey/wikify-repo-demo your-wiki
+
+# already cloned, or a fork you want to reset to the empty template:
+git checkout clean          # browse it
+git reset --hard origin/clean   # or hard-sync a branch to it
+```
+
+Then follow **Make your own** below to ingest *your* repos and articles into it.
+
 ## Make your own
 
 1. **Use this template** (or `git clone` this repo).
