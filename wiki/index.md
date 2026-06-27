@@ -11,6 +11,7 @@ page and cite the catalog anchor; drop to the pinned source for line-level certa
 | Slug | Source repo | Pinned commit | What it answers |
 |---|---|---|---|
 | [`mini_pytorch_xla`](code/mini_pytorch_xla/overview.md) | github.com/vlasenkoalexey/mini_pytorch_xla | `0b58029` | `__torch_dispatch__` TPU backend (PJRT/libtpu via ctypes, StableHLO text lowering) **+** a from-scratch `no_pytorch` autograd Tensor / nn / training loop — both tracks meet at the StableHLO+PJRT waist |
+| [`wikify-repo`](code/wikify-repo/overview.md) | github.com/vlasenkoalexey/wikify-repo | `7ada755` | the wiki tool itself (self-referential): the deterministic `wikify` CLI driving one LLM synthesis step — SCIP indexing + AST fallback, symbol graph + devirtualization, centrality-based concept discovery, monikers, citation lint + adversarial verify, two-tier coverage, idempotent reconcile |
 
 _To add one:_ **`ingest <repo-url-or-path>`** — the skill adds a row here and an entry to [`log.md`](log.md).
 

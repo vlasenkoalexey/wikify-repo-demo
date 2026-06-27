@@ -29,3 +29,15 @@ pages — `topics/llm-wiki-pattern.md` (three layers / three ops + the code-as-a
 and `topics/rag-vs-compiled-knowledge.md` (ingest-time vs. query-time synthesis, plus the code grounding
 twist). Cross-linked both into the `mini_pytorch_xla` code wiki and `SCHEMA.md`. Updated `wiki/index.md`
 Topics + Sources sections.
+
+## [2026-06-27] ingest-code | wikify-repo
+Self-referential ingest — the wiki tool ingesting its own source. Added
+github.com/vlasenkoalexey/wikify-repo as a submodule under `raw/code/wikify-repo`, pinned `7ada755`
+(`acquire: submodule`). `wikify prepare` indexed 514 symbols (scip-python) and emitted 11 packets;
+synthesized one grounded concept page each — cli, graph, scip_index, ast_fallback, discover, monikers,
+coverage, lint, verify, state, config. Wrote `overview.md`. Ingested the repo's own docs (README +
+docs/design + docs/implementation) into 10 `doc-concepts/` pages (incl. scip-vs-ast-parsing,
+wiki-as-storage-format, python-llm-split, idempotent-reconcile, two-tier-coverage, devirtualization,
+data-contracts, …). `wikify finalize` passed after one rule-2 repair (uncited Mechanism step in
+wikify-verify) — citation lint OK, 40 module catalog pages, 100% symbol coverage (266 deep / 248
+catalog-only / 51.8%), `index.md` assembled. Updated `wiki/index.md` Code-repos row.
