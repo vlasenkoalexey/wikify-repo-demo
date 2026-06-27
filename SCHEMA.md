@@ -27,8 +27,10 @@ You never hand-write the wiki. **Your job:** curate which sources to add and ask
 
 ## Architecture — three layers, two source types
 1. **Raw sources — immutable.** Read, never edited.
-   - **Code repos** → `raw/code/<slug>/`, pinned by commit SHA. **Gitignored** — we pin by SHA, we don't
-     vendor the code.
+   - **Code repos** → `raw/code/<slug>/` as a **git submodule** — this demo defaults to
+     **`acquire: submodule`** in each `config/<slug>.md`. The committed gitlink + `.gitmodules` *is* the
+     pin (reproducible via `git submodule update --init`); the contents aren't vendored as blobs. (The
+     tool also supports `acquire: clone` — gitignored clone, pin in state — for huge upstreams.)
    - **Articles / docs / notes** → `raw/sources/`. **Committed** — these *are* your curated source of
      truth (markdown clips, PDFs, transcripts) and must persist.
 2. **The wiki — generated, the agent owns it.** Markdown only.
@@ -45,7 +47,9 @@ You never hand-write the wiki. **Your job:** curate which sources to add and ask
 
 ### Ingest — two paths into one wiki
 - **Code repo.** Just say **`ingest <repo-url-or-local-path>`** → runs
-  **`.agents/skills/wikify-ingest-repo/SKILL.md`**: `prepare` (pin + SCIP-index + symbol graph + packets)
+  **`.agents/skills/wikify-ingest-repo/SKILL.md`**, which here bootstraps `config/<slug>.md` with
+  `acquire: submodule` so the repo lands as a submodule under `raw/code/<slug>`, then
+  `prepare` (pin + SCIP-index + symbol graph + packets)
   → synthesize one grounded concept page per packet → `overview.md` → ingest the repo's own docs into
   `doc-concepts/` → `finalize` (citation lint + coverage catalogs + assemble). Touches every page for
   that repo, updates `wiki/index.md`, appends `wiki/log.md`. **Idempotent reconcile** — re-running

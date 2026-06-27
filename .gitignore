@@ -1,7 +1,8 @@
-# Karpathy layer 1 — raw sources are immutable. Two source types, two conventions:
-#   - code repos: pinned by commit SHA and cloned on ingest, NOT vendored -> ignore raw/code/
-#   - articles/docs/notes: these ARE the curated source of truth -> raw/sources/ IS committed
-raw/code/
+# Karpathy layer 1 — raw sources are immutable. Both source types are TRACKED here:
+#   - code repos    -> raw/code/<slug> as git SUBMODULES (this demo defaults to
+#                      `acquire: submodule`); the committed gitlink + .gitmodules IS the pin.
+#   - articles/docs -> raw/sources/ committed as the curated source of truth.
+# So raw/ is NOT ignored. Only regenerable build artifacts are:
 
 # Build artifacts: SCIP indexes, packets, reconcile state. Regenerable, never committed.
 .cache/
