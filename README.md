@@ -21,17 +21,14 @@ This repo is both:
 ## The whole wiki at a glance
 
 [![Force-directed graph of the wiki: two ingested codebases (mini_pytorch_xla and wikify-repo) plus the prose pages, colored by page type](tools/graph/graph.png)](https://vlasenkoalexey.github.io/wikify-repo-demo/tools/graph/)
+(click image for interactive view)
+
 
 A snapshot of the live viewer (92 pages · 384 links). Every node is a wiki page; every edge a markdown
 link between pages. The two dense clusters are the two ingested codebases — [`mini_pytorch_xla`](wiki/code/mini_pytorch_xla/overview.md)
 and [`wikify-repo`](wiki/code/wikify-repo/overview.md) — joined through the shared root `index.md` and
 the prose pages. **Code** pages are colored by page type (`code:concepts`, `code:catalog`,
 `code:doc-concepts`, `code:overview`); **prose** by folder (`topics`, `sources`).
-
-**▶ [Open the interactive version →](https://vlasenkoalexey.github.io/wikify-repo-demo/tools/graph/)**
-(GitHub Pages) — hover to highlight a node's neighbors, click to open its page, search, toggle groups.
-Regenerate the data with `python3 tools/graph/build_graph.py`; the still above is a screenshot of the
-viewer (or run [`tools/graph/render_static.py`](tools/graph/render_static.py) for a labeled offline render).
 
 ## Repo layout
 
@@ -65,12 +62,7 @@ git clone --recurse-submodules https://github.com/vlasenkoalexey/wikify-repo-dem
 
 Open [`wiki/index.md`](wiki/index.md) and follow links, or `grep -ri "<term>" wiki/`. Everything is
 plain markdown — no embeddings, no database. An agent answers cheaply by reading `index.md`, grepping
-to the right page, and citing the catalog anchor. (You don't need the submodules just to read the wiki —
-only to follow a catalog link down to the exact source line.)
-
-**Prefer a visual?** See [the graph above](#the-whole-wiki-at-a-glance) — or open the
-[interactive viewer](https://vlasenkoalexey.github.io/wikify-repo-demo/tools/graph/) (hover, click a node
-to jump to its page, search, toggle groups).
+to the right page, and citing the catalog anchor.
 
 ## Start clean (just the pattern, none of the demo's ingested content)
 
