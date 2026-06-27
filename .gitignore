@@ -1,0 +1,19 @@
+# Karpathy layer 1 — raw sources are immutable AND pinned by commit SHA, not vendored.
+# We clone upstream repos here on ingest; never commit them.
+raw/
+
+# Build artifacts: SCIP indexes, packets, reconcile state. Regenerable, never committed.
+.cache/
+
+# Claude Code reads skills only from .claude/skills/, but the canonical copy lives in
+# .agents/skills/ (shared with Codex + Antigravity). install-skill.sh symlinks it here;
+# don't commit the mirror — keep one source of truth visible in the tree.
+/.claude/skills/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# NOTE: wiki/ is the PRODUCT here and IS committed (unlike in the wikify-repo tool repo).
