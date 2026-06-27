@@ -53,6 +53,14 @@ plain markdown — no embeddings, no database. An agent answers cheaply by readi
 to the right page, and citing the catalog anchor. (You don't need the submodules just to read the wiki —
 only to follow a catalog link down to the exact source line.)
 
+**Prefer a visual?** [`tools/graph/`](tools/graph/) is a dependency-free force-directed graph of the
+whole wiki — code pages colored by type (`code:concepts`, `code:catalog`, …) alongside the prose
+(`sources`, `topics`, `notes`). Regenerate + serve from the repo root:
+```bash
+python3 tools/graph/build_graph.py && python3 -m http.server 8000
+# then open http://localhost:8000/tools/graph/
+```
+
 ## Start clean (just the pattern, none of the demo's ingested content)
 
 `main` is the **fully-populated showcase** — it carries the demo's ingested sources (the
